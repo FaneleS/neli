@@ -1,20 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useCallback } from 'react'
+import { View } from 'react-native'
+import { useFonts, Italiana_400Regular } from '@expo-google-fonts/italiana'
+import * as SplashScreen from 'expo-splash-screen'
+import 'react-native-url-polyfill/auto'
+import RootNavigator from './src/navigation/RootNavigator'
+
+SplashScreen.preventAutoHideAsync()
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  const [fontsLoaded] = useFonts({ Italiana_400Regular })
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) await SplashScreen.hideAsync()
+  }, [fontsLoaded])
+
+  if (!fontsLoaded) return null
+
+  return (
+    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+      <RootNavigator />
+    </View>
+  )
+}
