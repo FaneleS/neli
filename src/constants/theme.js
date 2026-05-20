@@ -1,14 +1,16 @@
 export const colors = {
-  esp: '#2E2319',
-  esp2: '#4A3728',
-  green: '#2A6B4A',
-  gold: '#B8922A',
-  goldDim: '#6B5040',
-  parch: '#FAF7F0',
-  parch2: '#F2EDE3',
-  taupe: '#8C7B6B',
-  taupeLight: 'rgba(255,255,255,0.4)',
-  line: '#D4C9B4',
+  obsidian: '#080808',
+  obsidian2: '#111111',
+  obsidian3: '#141410',
+  champagne: '#E8D5A3',
+  gold: '#C9A84C',
+  rose: '#D4778A',
+  parch: '#F0EDE8',
+  taupeLight: 'rgba(240,237,232,0.4)',
+  taupe: 'rgba(240,237,232,0.2)',
+  line: '#2A2A2A',
+  lineBright: 'rgba(232,213,163,0.2)',
+  goldDim: 'rgba(232,213,163,0.15)',
 }
 
 export const fonts = {

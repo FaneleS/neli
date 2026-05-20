@@ -5,6 +5,7 @@ import {
 } from 'react-native'
 import { supabase } from '../../../lib/supabase'
 import { colors, radius, spacing } from '../../constants/theme'
+import { DiagonalWeave } from '../../components/OnboardingLayout'
 
 export default function SignInScreen({ navigation }) {
   const [email, setEmail] = useState('')
@@ -27,6 +28,7 @@ export default function SignInScreen({ navigation }) {
       contentContainerStyle={styles.content}
       keyboardShouldPersistTaps="handled"
     >
+      <DiagonalWeave />
       <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
         <Text style={styles.backText}>← Back</Text>
       </TouchableOpacity>
@@ -79,14 +81,14 @@ export default function SignInScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.esp },
+  container: { flex: 1, backgroundColor: colors.obsidian },
   content: { padding: spacing.lg, paddingTop: 60 },
   back: { marginBottom: spacing.lg },
-  backText: { color: colors.gold, fontSize: 14 },
+  backText: { color: colors.champagne, fontSize: 14 },
   logo: {
     fontFamily: 'Italiana_400Regular',
     fontSize: 42,
-    color: colors.gold,
+    color: colors.champagne,
     marginBottom: spacing.xs,
   },
   title: {
@@ -99,9 +101,9 @@ const styles = StyleSheet.create({
   form: { gap: spacing.sm },
   label: { fontSize: 12, color: colors.taupeLight, marginBottom: 4 },
   input: {
-    backgroundColor: colors.esp2,
+    backgroundColor: colors.obsidian2,
     borderWidth: 0.5,
-    borderColor: colors.goldDim,
+    borderColor: colors.line,
     borderRadius: radius.md,
     padding: spacing.md,
     color: colors.parch,
@@ -109,7 +111,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   btnPrimary: {
-    backgroundColor: colors.gold,
+    backgroundColor: colors.champagne,
     padding: spacing.md,
     borderRadius: radius.full,
     alignItems: 'center',
@@ -119,7 +121,7 @@ const styles = StyleSheet.create({
   btnPrimaryText: {
     fontFamily: 'Italiana_400Regular',
     fontSize: 18,
-    color: colors.esp,
+    color: colors.obsidian,
   },
   switchText: {
     color: colors.taupeLight,
@@ -127,5 +129,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginTop: spacing.md,
   },
-  switchLink: { color: colors.gold },
+  switchLink: { color: colors.champagne },
 })

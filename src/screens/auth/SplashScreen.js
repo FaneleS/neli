@@ -1,58 +1,21 @@
-import { useCallback } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native'
-import Svg, { Line, Rect } from 'react-native-svg'
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { colors, radius, spacing } from '../../constants/theme'
+import { DiagonalWeave } from '../../components/OnboardingLayout'
 
-const { width, height } = Dimensions.get('window')
 
-function DiagonalWeave() {
-  const lines = []
-  const gap = 30
 
-  for (let i = -height; i < width + height; i += gap) {
-    lines.push(
-      <Line
-        key={`d1-${i}`}
-        x1={i} y1={0}
-        x2={i + height} y2={height}
-        stroke="#4A3728"
-        strokeWidth="0.4"
-      />
-    )
-    lines.push(
-      <Line
-        key={`d2-${i}`}
-        x1={i} y1={0}
-        x2={i - height} y2={height}
-        stroke="#4A3728"
-        strokeWidth="0.4"
-      />
-    )
-  }
 
-  return (
-    <Svg
-      width={width}
-      height={height}
-      style={StyleSheet.absoluteFill}
-    >
-      <Rect width={width} height={height} fill={colors.esp} />
-      {lines}
-    </Svg>
-  )
-}
 
 export default function SplashScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <DiagonalWeave />
-
       <View style={styles.center}>
+        <Text style={styles.eyebrow}>interracial dating</Text>
         <Text style={styles.logo}>Neli</Text>
         <Text style={styles.tagline}>love in every shade</Text>
         <View style={styles.divider} />
       </View>
-
       <View style={styles.buttons}>
         <TouchableOpacity
           style={styles.btnPrimary}
@@ -77,7 +40,7 @@ export default function SplashScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.esp,
+    backgroundColor: colors.obsidian,
     padding: spacing.lg,
     justifyContent: 'space-between',
   },
@@ -87,22 +50,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 1,
   },
+  eyebrow: {
+    fontSize: 9,
+    letterSpacing: 5,
+    textTransform: 'uppercase',
+    color: colors.champagne,
+    marginBottom: spacing.sm,
+    opacity: 0.7,
+  },
   logo: {
     fontFamily: 'Italiana_400Regular',
-    fontSize: 80,
-    color: colors.gold,
-    lineHeight: 88,
+    fontSize: 88,
+    color: colors.champagne,
+    lineHeight: 96,
   },
   tagline: {
-    fontSize: 13,
+    fontSize: 12,
     color: colors.taupeLight,
-    letterSpacing: 2,
-    marginTop: spacing.sm,
+    letterSpacing: 3,
+    marginTop: spacing.xs,
   },
   divider: {
     width: 40,
     height: 0.5,
-    backgroundColor: colors.goldDim,
+    backgroundColor: colors.lineBright || 'rgba(232,213,163,0.2)',
     marginTop: spacing.lg,
   },
   buttons: {
@@ -110,7 +81,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   btnPrimary: {
-    backgroundColor: colors.gold,
+    backgroundColor: colors.champagne,
     padding: spacing.md,
     borderRadius: radius.full,
     alignItems: 'center',
@@ -118,7 +89,7 @@ const styles = StyleSheet.create({
   btnPrimaryText: {
     fontFamily: 'Italiana_400Regular',
     fontSize: 18,
-    color: colors.esp,
+    color: colors.obsidian,
   },
   btnGhost: {
     backgroundColor: 'transparent',
@@ -126,12 +97,12 @@ const styles = StyleSheet.create({
     borderRadius: radius.full,
     alignItems: 'center',
     borderWidth: 0.5,
-    borderColor: colors.goldDim,
+    borderColor: 'rgba(240,237,232,0.15)',
   },
   btnGhostText: {
     fontFamily: 'Italiana_400Regular',
     fontSize: 18,
-    color: colors.gold,
+    color: 'rgba(240,237,232,0.5)',
   },
   legal: {
     fontSize: 10,
