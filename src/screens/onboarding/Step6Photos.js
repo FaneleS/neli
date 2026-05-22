@@ -4,6 +4,7 @@ import {
   StyleSheet, ScrollView, Alert, Image
 } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
+import { Feather } from '@expo/vector-icons'
 import { colors, radius, spacing } from '../../constants/theme'
 import { DiagonalWeave } from '../../components/OnboardingLayout'
 
@@ -87,7 +88,7 @@ export default function Step6Photos({ navigation, route }) {
                 style={styles.removeBtn}
                 onPress={() => removePhoto(index)}
               >
-                <Text style={styles.removeBtnText}>✕</Text>
+                <Feather name="x" size={12} color="#fff" />
               </TouchableOpacity>
               {index === 0 && (
                 <View style={styles.mainBadge}>
@@ -98,15 +99,15 @@ export default function Step6Photos({ navigation, route }) {
           ))}
           {photos.length < 6 && (
             <TouchableOpacity style={styles.addBtn} onPress={pickPhoto}>
-              <Text style={styles.addBtnIcon}>+</Text>
+              <Feather name="plus" size={28} color={colors.taupeLight} />
               <Text style={styles.addBtnText}>Add photo</Text>
             </TouchableOpacity>
           )}
         </View>
 
-        <Text style={styles.hint}>✦ First photo is your main profile photo</Text>
-        <Text style={styles.hint}>✦ Clear face photos get more matches</Text>
-        <Text style={styles.hint}>✦ No filters needed — Neli celebrates the real you</Text>
+        <Text style={styles.hint}>First photo is your main profile photo</Text>
+        <Text style={styles.hint}>Clear face photos get more matches</Text>
+        <Text style={styles.hint}>No filters needed — Neli celebrates the real you</Text>
 
       </ScrollView>
     </View>
@@ -114,163 +115,46 @@ export default function Step6Photos({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    backgroundColor: colors.obsidian,
-  },
-  progressRow: {
-    flexDirection: 'row',
-    gap: 4,
-    paddingHorizontal: spacing.lg,
-    paddingTop: 52,
-    zIndex: 1,
-  },
-  progressSegment: {
-    flex: 1,
-    height: 2,
-    borderRadius: 2,
-  },
-  progressActive: {
-    backgroundColor: colors.champagne,
-  },
-  progressInactive: {
-    backgroundColor: colors.line,
-  },
-  scroll: {
-    flex: 1,
-    zIndex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xl,
-  },
-  header: {
-    paddingTop: spacing.md,
-    marginBottom: spacing.lg,
-  },
-  backText: {
-    color: colors.champagne,
-    fontSize: 14,
-    marginBottom: spacing.sm,
-  },
-  logo: {
-    fontFamily: 'Italiana_400Regular',
-    fontSize: 28,
-    color: colors.champagne,
-    marginBottom: spacing.xs,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '500',
-    color: colors.parch,
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: colors.taupeLight,
-    lineHeight: 20,
-    marginBottom: spacing.md,
-  },
+  wrapper: { flex: 1, backgroundColor: colors.obsidian },
+  progressRow: { flexDirection: 'row', gap: 4, paddingHorizontal: spacing.lg, paddingTop: 52, zIndex: 1 },
+  progressSegment: { flex: 1, height: 2, borderRadius: 2 },
+  progressActive: { backgroundColor: colors.champagne },
+  progressInactive: { backgroundColor: colors.line },
+  scroll: { flex: 1, zIndex: 1 },
+  scrollContent: { paddingHorizontal: spacing.lg, paddingBottom: spacing.xl },
+  header: { paddingTop: spacing.md, marginBottom: spacing.lg },
+  backText: { color: colors.champagne, fontSize: 14, marginBottom: spacing.sm },
+  logo: { fontFamily: 'Italiana_400Regular', fontSize: 28, color: colors.champagne, marginBottom: spacing.xs },
+  title: { fontSize: 24, fontWeight: '500', color: colors.parch, marginBottom: 4 },
+  subtitle: { fontSize: 13, color: colors.taupeLight, lineHeight: 20, marginBottom: spacing.md },
   warningBanner: {
-    backgroundColor: 'rgba(232,213,163,0.08)',
-    borderWidth: 0.5,
-    borderColor: colors.champagne,
-    borderRadius: radius.md,
-    padding: spacing.sm,
-    marginBottom: spacing.sm,
-    alignItems: 'center',
+    backgroundColor: 'rgba(232,213,163,0.08)', borderWidth: 0.5,
+    borderColor: colors.champagne, borderRadius: radius.md,
+    padding: spacing.sm, marginBottom: spacing.sm, alignItems: 'center',
   },
-  warningText: {
-    fontSize: 12,
-    color: colors.champagne,
-    textAlign: 'center',
-  },
-  btn: {
-    backgroundColor: colors.champagne,
-    padding: spacing.md,
-    borderRadius: radius.full,
-    alignItems: 'center',
-    marginBottom: spacing.md,
-  },
-  btnDisabled: {
-    opacity: 0.4,
-  },
-  btnText: {
-    fontFamily: 'Italiana_400Regular',
-    fontSize: 18,
-    color: colors.obsidian,
-  },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-    marginBottom: spacing.lg,
-  },
-  photoContainer: {
-    width: '47%',
-    aspectRatio: 3 / 4,
-    borderRadius: radius.md,
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  photo: {
-    width: '100%',
-    height: '100%',
-  },
+  warningText: { fontSize: 12, color: colors.champagne, textAlign: 'center' },
+  btn: { backgroundColor: colors.champagne, padding: spacing.md, borderRadius: radius.full, alignItems: 'center', marginBottom: spacing.md },
+  btnDisabled: { opacity: 0.4 },
+  btnText: { fontFamily: 'Italiana_400Regular', fontSize: 18, color: colors.obsidian },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginBottom: spacing.lg },
+  photoContainer: { width: '47%', aspectRatio: 3 / 4, borderRadius: radius.md, overflow: 'hidden', position: 'relative' },
+  photo: { width: '100%', height: '100%' },
   removeBtn: {
-    position: 'absolute',
-    top: 6,
-    right: 6,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  removeBtnText: {
-    color: '#fff',
-    fontSize: 12,
+    position: 'absolute', top: 6, right: 6,
+    width: 24, height: 24, borderRadius: 12,
+    backgroundColor: 'rgba(0,0,0,0.6)', alignItems: 'center', justifyContent: 'center',
   },
   mainBadge: {
-    position: 'absolute',
-    bottom: 6,
-    left: 6,
-    backgroundColor: colors.champagne,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: radius.full,
+    position: 'absolute', bottom: 6, left: 6,
+    backgroundColor: colors.champagne, paddingHorizontal: 8,
+    paddingVertical: 2, borderRadius: radius.full,
   },
-  mainBadgeText: {
-    fontSize: 10,
-    color: colors.obsidian,
-    fontWeight: '600',
-  },
+  mainBadgeText: { fontSize: 10, color: colors.obsidian, fontWeight: '600' },
   addBtn: {
-    width: '47%',
-    aspectRatio: 3 / 4,
-    borderRadius: radius.md,
-    borderWidth: 0.5,
-    borderColor: colors.line,
-    borderStyle: 'dashed',
-    backgroundColor: colors.obsidian2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.xs,
+    width: '47%', aspectRatio: 3 / 4, borderRadius: radius.md,
+    borderWidth: 0.5, borderColor: colors.line, borderStyle: 'dashed',
+    backgroundColor: colors.obsidian2, alignItems: 'center', justifyContent: 'center', gap: spacing.xs,
   },
-  addBtnIcon: {
-    fontSize: 28,
-    color: colors.taupeLight,
-  },
-  addBtnText: {
-    fontSize: 12,
-    color: colors.taupeLight,
-  },
-  hint: {
-    fontSize: 12,
-    color: colors.taupeLight,
-    marginBottom: spacing.sm,
-    lineHeight: 18,
-    opacity: 0.7,
-  },
+  addBtnText: { fontSize: 12, color: colors.taupeLight },
+  hint: { fontSize: 12, color: colors.taupeLight, marginBottom: spacing.sm, lineHeight: 18, opacity: 0.7 },
 })

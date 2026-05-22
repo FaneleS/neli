@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import {
   View, Text, TouchableOpacity, StyleSheet,
-  ScrollView, TextInput, ActivityIndicator
+  ScrollView, ActivityIndicator
 } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 import { DiagonalWeave } from '../../components/OnboardingLayout'
 import { colors, spacing, radius } from '../../constants/theme'
 import { supabase } from '../../../lib/supabase'
@@ -22,7 +23,7 @@ function ProfileCard({ profile, onPress }) {
         </View>
         {profile.is_verified && (
           <View style={styles.verifiedBadge}>
-            <Text style={styles.verifiedText}>✓</Text>
+            <Feather name="check" size={10} color="#fff" />
           </View>
         )}
       </View>
@@ -61,7 +62,6 @@ function calculateAge(dob) {
   return new Date().getFullYear() - birthYear
 }
 
-// Sample profiles for testing UI before real data
 const SAMPLE_PROFILES = [
   {
     id: '1',
@@ -145,27 +145,25 @@ const SAMPLE_PROFILES = [
 
 export default function BrowseScreen({ navigation }) {
   const [filter, setFilter] = useState('All')
-  const [profiles, setProfiles] = useState(SAMPLE_PROFILES)
-  const [loading, setLoading] = useState(false)
+  const [profiles] = useState(SAMPLE_PROFILES)
+  const [loading] = useState(false)
 
   return (
     <View style={styles.container}>
       <DiagonalWeave />
 
-      {/* Top nav */}
       <View style={styles.topNav}>
         <Text style={styles.logo}>Neli</Text>
         <View style={styles.navRight}>
           <TouchableOpacity style={styles.navBtn}>
-            <Text style={styles.navIcon}>🔔</Text>
+            <Feather name="bell" size={16} color={colors.champagne} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.navBtn}>
-            <Text style={styles.navIcon}>⚙</Text>
+            <Feather name="settings" size={16} color={colors.champagne} />
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Filter pills */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -185,7 +183,6 @@ export default function BrowseScreen({ navigation }) {
         ))}
       </ScrollView>
 
-      {/* Grid */}
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator color={colors.champagne} />
@@ -197,7 +194,7 @@ export default function BrowseScreen({ navigation }) {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.gridRow}>
-            {profiles.map((profile, index) => (
+            {profiles.map((profile) => (
               <ProfileCard
                 key={profile.id}
                 profile={profile}
@@ -245,9 +242,6 @@ const styles = StyleSheet.create({
     borderColor: colors.line,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  navIcon: {
-    fontSize: 16,
   },
   filterRow: {
     zIndex: 1,
@@ -335,11 +329,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#2A6B4A',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  verifiedText: {
-    color: '#fff',
-    fontSize: 10,
-    fontWeight: '600',
   },
   cardBody: {
     padding: spacing.sm,

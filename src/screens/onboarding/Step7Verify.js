@@ -4,6 +4,7 @@ import {
   StyleSheet, ScrollView, Alert, ActivityIndicator
 } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
+import { Feather } from '@expo/vector-icons'
 import { colors, radius, spacing } from '../../constants/theme'
 import { DiagonalWeave } from '../../components/OnboardingLayout'
 import { supabase } from '../../../lib/supabase'
@@ -101,7 +102,7 @@ export default function Step7Verify({ navigation, route }) {
         </View>
 
         <View style={styles.safetyBanner}>
-          <Text style={styles.safetyIcon}>🔒</Text>
+          <Feather name="lock" size={16} color="#5ecb96" />
           <Text style={styles.safetyText}>
             Your documents are encrypted and never shared with other users. Verification keeps Neli genuine and safe.
           </Text>
@@ -113,7 +114,11 @@ export default function Step7Verify({ navigation, route }) {
           style={[styles.uploadBtn, idPhoto && styles.uploadBtnDone]}
           onPress={pickID}
         >
-          <Text style={styles.uploadIcon}>{idPhoto ? '✓' : '↑'}</Text>
+          <Feather
+            name={idPhoto ? 'check-circle' : 'upload'}
+            size={20}
+            color={idPhoto ? '#5ecb96' : colors.taupeLight}
+          />
           <Text style={[styles.uploadText, idPhoto && styles.uploadTextDone]}>
             {idPhoto ? 'ID uploaded successfully' : 'Tap to upload your ID'}
           </Text>
@@ -125,7 +130,11 @@ export default function Step7Verify({ navigation, route }) {
           style={[styles.uploadBtn, selfie && styles.uploadBtnDone]}
           onPress={takeSelfie}
         >
-          <Text style={styles.uploadIcon}>{selfie ? '✓' : '📷'}</Text>
+          <Feather
+            name={selfie ? 'check-circle' : 'camera'}
+            size={20}
+            color={selfie ? '#5ecb96' : colors.taupeLight}
+          />
           <Text style={[styles.uploadText, selfie && styles.uploadTextDone]}>
             {selfie ? 'Selfie taken successfully' : 'Tap to take a selfie'}
           </Text>
@@ -148,101 +157,38 @@ export default function Step7Verify({ navigation, route }) {
         >
           <Text style={styles.skipText}>Skip for now — verify later</Text>
         </TouchableOpacity>
-
       </ScrollView>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    backgroundColor: colors.obsidian,
-  },
-  progressRow: {
-    flexDirection: 'row',
-    gap: 4,
-    paddingHorizontal: spacing.lg,
-    paddingTop: 52,
-    zIndex: 1,
-  },
-  progressSegment: {
-    flex: 1,
-    height: 2,
-    borderRadius: 2,
-  },
-  progressActive: {
-    backgroundColor: colors.champagne,
-  },
-  progressInactive: {
-    backgroundColor: colors.line,
-  },
-  scroll: {
-    flex: 1,
-    zIndex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xl,
-  },
-  header: {
-    paddingTop: spacing.md,
-    marginBottom: spacing.lg,
-  },
-  backText: {
-    color: colors.champagne,
-    fontSize: 14,
-    marginBottom: spacing.sm,
-  },
-  logo: {
-    fontFamily: 'Italiana_400Regular',
-    fontSize: 28,
-    color: colors.champagne,
-    marginBottom: spacing.xs,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '500',
-    color: colors.parch,
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: colors.taupeLight,
-    lineHeight: 20,
-  },
+  wrapper: { flex: 1, backgroundColor: colors.obsidian },
+  progressRow: { flexDirection: 'row', gap: 4, paddingHorizontal: spacing.lg, paddingTop: 52, zIndex: 1 },
+  progressSegment: { flex: 1, height: 2, borderRadius: 2 },
+  progressActive: { backgroundColor: colors.champagne },
+  progressInactive: { backgroundColor: colors.line },
+  scroll: { flex: 1, zIndex: 1 },
+  scrollContent: { paddingHorizontal: spacing.lg, paddingBottom: spacing.xl },
+  header: { paddingTop: spacing.md, marginBottom: spacing.lg },
+  backText: { color: colors.champagne, fontSize: 14, marginBottom: spacing.sm },
+  logo: { fontFamily: 'Italiana_400Regular', fontSize: 28, color: colors.champagne, marginBottom: spacing.xs },
+  title: { fontSize: 24, fontWeight: '500', color: colors.parch, marginBottom: 4 },
+  subtitle: { fontSize: 13, color: colors.taupeLight, lineHeight: 20 },
   safetyBanner: {
     flexDirection: 'row',
     alignItems: 'flex-start',
+    gap: spacing.sm,
     backgroundColor: 'rgba(42,107,74,0.15)',
     borderWidth: 0.5,
     borderColor: '#2A6B4A',
     borderRadius: radius.md,
     padding: spacing.md,
     marginBottom: spacing.lg,
-    gap: spacing.sm,
   },
-  safetyIcon: {
-    fontSize: 16,
-  },
-  safetyText: {
-    flex: 1,
-    fontSize: 12,
-    color: '#5ecb96',
-    lineHeight: 18,
-  },
-  stepLabel: {
-    fontSize: 13,
-    color: colors.champagne,
-    fontWeight: '500',
-    marginBottom: 4,
-  },
-  stepSub: {
-    fontSize: 11,
-    color: colors.taupeLight,
-    marginBottom: spacing.sm,
-    opacity: 0.7,
-  },
+  safetyText: { flex: 1, fontSize: 12, color: '#5ecb96', lineHeight: 18 },
+  stepLabel: { fontSize: 13, color: colors.champagne, fontWeight: '500', marginBottom: 4 },
+  stepSub: { fontSize: 11, color: colors.taupeLight, marginBottom: spacing.sm, opacity: 0.7 },
   uploadBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -254,21 +200,9 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     marginBottom: spacing.lg,
   },
-  uploadBtnDone: {
-    borderColor: '#2A6B4A',
-    backgroundColor: 'rgba(42,107,74,0.1)',
-  },
-  uploadIcon: {
-    fontSize: 20,
-    color: colors.taupeLight,
-  },
-  uploadText: {
-    fontSize: 14,
-    color: colors.taupeLight,
-  },
-  uploadTextDone: {
-    color: '#5ecb96',
-  },
+  uploadBtnDone: { borderColor: '#2A6B4A', backgroundColor: 'rgba(42,107,74,0.1)' },
+  uploadText: { fontSize: 14, color: colors.taupeLight },
+  uploadTextDone: { color: '#5ecb96' },
   btn: {
     backgroundColor: colors.champagne,
     padding: spacing.md,
@@ -277,22 +211,8 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
     marginBottom: spacing.md,
   },
-  btnDisabled: {
-    opacity: 0.4,
-  },
-  btnText: {
-    fontFamily: 'Italiana_400Regular',
-    fontSize: 18,
-    color: colors.obsidian,
-  },
-  skipBtn: {
-    alignItems: 'center',
-    padding: spacing.md,
-    marginBottom: spacing.lg,
-  },
-  skipText: {
-    fontSize: 12,
-    color: colors.taupeLight,
-    opacity: 0.6,
-  },
+  btnDisabled: { opacity: 0.4 },
+  btnText: { fontFamily: 'Italiana_400Regular', fontSize: 18, color: colors.obsidian },
+  skipBtn: { alignItems: 'center', padding: spacing.md, marginBottom: spacing.lg },
+  skipText: { fontSize: 12, color: colors.taupeLight, opacity: 0.6 },
 })

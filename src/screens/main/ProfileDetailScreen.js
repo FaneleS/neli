@@ -3,6 +3,7 @@ import {
   View, Text, TouchableOpacity,
   StyleSheet, ScrollView, Alert
 } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 import { colors, radius, spacing } from '../../constants/theme'
 import { DiagonalWeave } from '../../components/OnboardingLayout'
 import { supabase } from '../../../lib/supabase'
@@ -10,10 +11,8 @@ import { supabase } from '../../../lib/supabase'
 export default function ProfileDetailScreen({ navigation, route }) {
   const { profile } = route.params || {}
   const [loading, setLoading] = useState(false)
-  const [action, setAction] = useState(null)
 
   async function handleSwipe(direction) {
-    setAction(direction)
     setLoading(true)
     try {
       const { data: { user } } = await supabase.auth.getUser()
@@ -27,7 +26,6 @@ export default function ProfileDetailScreen({ navigation, route }) {
       if (error) throw error
 
       if (direction === 'like') {
-        // Check if other person already liked us
         const { data: mutualLike } = await supabase
           .from('swipes')
           .select('*')
@@ -37,7 +35,6 @@ export default function ProfileDetailScreen({ navigation, route }) {
           .single()
 
         if (mutualLike) {
-          // It's a match!
           const { error: matchError } = await supabase
             .from('matches')
             .upsert({
@@ -81,7 +78,6 @@ export default function ProfileDetailScreen({ navigation, route }) {
     <View style={styles.wrapper}>
       <DiagonalWeave />
 
-      {/* Photo area */}
       <View style={styles.photoArea}>
         <View style={[styles.photoPlaceholder, { backgroundColor: profile.cardColor || '#1a1a1a' }]}>
           <Text style={styles.avatarText}>
@@ -89,42 +85,38 @@ export default function ProfileDetailScreen({ navigation, route }) {
           </Text>
         </View>
 
-        {/* Back button */}
         <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
-          <Text style={styles.backBtnText}>←</Text>
+          <Feather name="arrow-left" size={18} color={colors.champagne} />
         </TouchableOpacity>
 
-        {/* Verified badge */}
         {profile.is_verified && (
           <View style={styles.verifiedBadge}>
-            <Text style={styles.verifiedText}>✓ Verified</Text>
+            <Feather name="check-circle" size={11} color="#5ecb96" />
+            <Text style={styles.verifiedText}>Verified</Text>
           </View>
         )}
 
-        {/* Swipe hints */}
         <View style={styles.swipeHints}>
           <View style={styles.hintItem}>
             <View style={styles.hintCirclePass}>
-              <Text style={styles.hintArrow}>↓</Text>
+              <Feather name="arrow-down" size={14} color={colors.taupeLight} />
             </View>
             <Text style={styles.hintLabel}>Pass</Text>
           </View>
           <View style={styles.hintItem}>
             <View style={styles.hintCircleLike}>
-              <Text style={[styles.hintArrow, { color: colors.champagne }]}>↑</Text>
+              <Feather name="arrow-up" size={14} color={colors.champagne} />
             </View>
             <Text style={[styles.hintLabel, { color: colors.champagne }]}>Like</Text>
           </View>
         </View>
       </View>
 
-      {/* Profile content */}
       <ScrollView
         style={styles.content}
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
-        {/* Name row */}
         <View style={styles.nameRow}>
           <Text style={styles.name}>{profile.full_name?.split(' ')[0]}</Text>
           <Text style={styles.age}>{calculateAge(profile.date_of_birth)}</Text>
@@ -136,14 +128,15 @@ export default function ProfileDetailScreen({ navigation, route }) {
           )}
         </View>
 
-        <Text style={styles.location}>📍 {profile.nationality || 'Earth'}</Text>
+        <Text style={styles.location}>
+          <Feather name="map-pin" size={11} color={colors.taupeLight} /> {profile.nationality || 'Earth'}
+        </Text>
 
-        {/* Open to all badge */}
         <View style={styles.openBadge}>
-          <Text style={styles.openBadgeText}>✓ Open to all backgrounds</Text>
+          <Feather name="check-circle" size={11} color="#5ecb96" />
+          <Text style={styles.openBadgeText}>Open to all backgrounds</Text>
         </View>
 
-        {/* Bio */}
         {profile.bio && (
           <View style={styles.section}>
             <Text style={styles.sectionLabel}>About</Text>
@@ -151,7 +144,6 @@ export default function ProfileDetailScreen({ navigation, route }) {
           </View>
         )}
 
-        {/* Prompts */}
         {profile.profile_prompts?.map((prompt, i) => (
           <View key={i} style={styles.promptBlock}>
             <Text style={styles.promptQ}>{prompt.prompt_question}</Text>
@@ -159,27 +151,29 @@ export default function ProfileDetailScreen({ navigation, route }) {
           </View>
         ))}
 
-        {/* Action buttons */}
         <View style={styles.actionRow}>
           <TouchableOpacity
             style={styles.passBtn}
             onPress={() => handleSwipe('pass')}
             disabled={loading}
           >
-            <Text style={styles.passBtnText}>✕ Pass</Text>
+            <Feather name="x" size={16} color={colors.taupeLight} />
+            <Text style={styles.passBtnText}>Pass</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.likeBtn}
             onPress={() => handleSwipe('like')}
             disabled={loading}
           >
-            <Text style={styles.likeBtnText}>♡ Like</Text>
+            <Feather name="heart" size={16} color={colors.obsidian} />
+            <Text style={styles.likeBtnText}>Like</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.safetyBar}>
+          <Feather name="shield" size={13} color="#5ecb96" />
           <Text style={styles.safetyText}>
-            🛡 Always meet in a public place first. Trust your instincts.
+            Always meet in a public place first. Trust your instincts.
           </Text>
         </View>
 
@@ -231,14 +225,13 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: colors.line,
   },
-  backBtnText: {
-    color: colors.champagne,
-    fontSize: 18,
-  },
   verifiedBadge: {
     position: 'absolute',
     top: 52,
     right: spacing.lg,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
     backgroundColor: 'rgba(42,107,74,0.3)',
     borderWidth: 0.5,
     borderColor: '#2A6B4A',
@@ -282,10 +275,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(232,213,163,0.1)',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  hintArrow: {
-    fontSize: 16,
-    color: colors.taupeLight,
   },
   hintLabel: {
     fontSize: 10,
@@ -335,6 +324,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   openBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
     alignSelf: 'flex-start',
     backgroundColor: 'rgba(42,107,74,0.15)',
     borderWidth: 0.5,
@@ -394,12 +386,15 @@ const styles = StyleSheet.create({
   },
   passBtn: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
     padding: spacing.md,
     borderRadius: radius.full,
     borderWidth: 0.5,
     borderColor: colors.line,
     backgroundColor: colors.obsidian2,
-    alignItems: 'center',
   },
   passBtnText: {
     fontSize: 15,
@@ -407,10 +402,13 @@ const styles = StyleSheet.create({
   },
   likeBtn: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
     padding: spacing.md,
     borderRadius: radius.full,
     backgroundColor: colors.champagne,
-    alignItems: 'center',
   },
   likeBtnText: {
     fontSize: 15,
@@ -418,6 +416,9 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   safetyBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
     backgroundColor: 'rgba(42,107,74,0.1)',
     borderWidth: 0.5,
     borderColor: '#2A6B4A',
@@ -425,9 +426,9 @@ const styles = StyleSheet.create({
     padding: spacing.md,
   },
   safetyText: {
+    flex: 1,
     fontSize: 11,
     color: '#5ecb96',
-    textAlign: 'center',
     lineHeight: 16,
   },
 })

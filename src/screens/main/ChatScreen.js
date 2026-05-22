@@ -4,6 +4,7 @@ import {
   StyleSheet, FlatList, TextInput,
   ActivityIndicator, KeyboardAvoidingView, Platform
 } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 import { colors, radius, spacing } from '../../constants/theme'
 import { DiagonalWeave } from '../../components/OnboardingLayout'
 import { supabase } from '../../../lib/supabase'
@@ -46,7 +47,7 @@ export default function ChatScreen({ navigation, route }) {
     }
   }
 
-  function subscribeToMessages(userId) {
+  function subscribeToMessages() {
     supabase
       .channel('messages')
       .on('postgres_changes', {
@@ -66,7 +67,6 @@ export default function ChatScreen({ navigation, route }) {
     setSending(true)
     const content = newMessage.trim()
     setNewMessage('')
-
     try {
       const { error } = await supabase
         .from('messages')
@@ -121,10 +121,9 @@ export default function ChatScreen({ navigation, route }) {
     >
       <DiagonalWeave />
 
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
-          <Text style={styles.backBtnText}>←</Text>
+          <Feather name="arrow-left" size={18} color={colors.champagne} />
         </TouchableOpacity>
         <View style={[styles.headerAvatar, { backgroundColor: profile?.cardColor || '#252535' }]}>
           <Text style={styles.headerAvatarText}>
@@ -135,16 +134,16 @@ export default function ChatScreen({ navigation, route }) {
           <Text style={styles.headerName}>{profile?.full_name?.split(' ')[0]}</Text>
           <Text style={styles.headerStatus}>Active now · {profile?.country_flag}</Text>
         </View>
+        <Feather name="more-horizontal" size={18} color={colors.taupeLight} />
       </View>
 
-      {/* Safety banner */}
       <View style={styles.safetyBanner}>
+        <Feather name="shield" size={12} color="#5ecb96" />
         <Text style={styles.safetyText}>
-          🛡 Always meet in a public place first. Trust your instincts.
+          Always meet in a public place first. Trust your instincts.
         </Text>
       </View>
 
-      {/* Prompt answers */}
       {match?.user1_answer && match?.user2_answer && (
         <View style={styles.promptIntro}>
           <Text style={styles.promptIntroLabel}>Neli started your conversation</Text>
@@ -166,7 +165,6 @@ export default function ChatScreen({ navigation, route }) {
         </View>
       )}
 
-      {/* Messages */}
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator color={colors.champagne} />
@@ -183,14 +181,13 @@ export default function ChatScreen({ navigation, route }) {
           ListEmptyComponent={
             <View style={styles.emptyMessages}>
               <Text style={styles.emptyMessagesText}>
-                Your chat is unlocked! Say hello to {profile?.full_name?.split(' ')[0]} 👋
+                Your chat is unlocked! Say hello to {profile?.full_name?.split(' ')[0]}
               </Text>
             </View>
           }
         />
       )}
 
-      {/* Input */}
       <View style={styles.inputRow}>
         <TextInput
           style={styles.input}
@@ -200,7 +197,6 @@ export default function ChatScreen({ navigation, route }) {
           placeholderTextColor={colors.taupeLight}
           multiline
           maxLength={500}
-          onSubmitEditing={sendMessage}
         />
         <TouchableOpacity
           style={[styles.sendBtn, (!newMessage.trim() || sending) && styles.sendBtnDisabled]}
@@ -209,7 +205,7 @@ export default function ChatScreen({ navigation, route }) {
         >
           {sending
             ? <ActivityIndicator color={colors.obsidian} size="small" />
-            : <Text style={styles.sendBtnText}>↑</Text>
+            : <Feather name="send" size={16} color={colors.obsidian} />
           }
         </TouchableOpacity>
       </View>
@@ -240,10 +236,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  backBtnText: {
-    color: colors.champagne,
-    fontSize: 20,
-  },
   headerAvatar: {
     width: 36,
     height: 36,
@@ -272,16 +264,20 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   safetyBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
     backgroundColor: 'rgba(42,107,74,0.1)',
     borderBottomWidth: 0.5,
     borderBottomColor: '#2A6B4A',
     padding: spacing.sm,
+    paddingHorizontal: spacing.md,
     zIndex: 1,
   },
   safetyText: {
+    flex: 1,
     fontSize: 11,
     color: '#5ecb96',
-    textAlign: 'center',
   },
   promptIntro: {
     backgroundColor: 'rgba(232,213,163,0.05)',
@@ -424,10 +420,5 @@ const styles = StyleSheet.create({
   },
   sendBtnDisabled: {
     opacity: 0.4,
-  },
-  sendBtnText: {
-    color: colors.obsidian,
-    fontSize: 18,
-    fontWeight: '600',
   },
 })
