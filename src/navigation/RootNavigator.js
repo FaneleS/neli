@@ -12,13 +12,19 @@ import Step6Photos from '../screens/onboarding/Step6Photos'
 import Step7Verify from '../screens/onboarding/Step7Verify'
 import Step8Personality from '../screens/onboarding/Step8Personality'
 import MainNavigator from './MainNavigator'
+import ProfileDetailScreen from '../screens/main/ProfileDetailScreen'
+import MatchScreen from '../screens/main/MatchScreen'
+import ChatScreen from '../screens/main/ChatScreen'
 
 const Stack = createStackNavigator()
 
-export default function RootNavigator() {
+export default function RootNavigator({ session }) {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        screenOptions={{ headerShown: false }}
+        initialRouteName={session ? 'MainApp' : 'Splash'}
+      >
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="SignIn" component={SignInScreen} />
         <Stack.Screen name="SignUp" component={SignUpScreen} />
@@ -31,6 +37,9 @@ export default function RootNavigator() {
         <Stack.Screen name="Step7Verify" component={Step7Verify} />
         <Stack.Screen name="Step8Personality" component={Step8Personality} />
         <Stack.Screen name="MainApp" component={MainNavigator} />
+        <Stack.Screen name="ProfileDetail" component={ProfileDetailScreen} />
+        <Stack.Screen name="MatchScreen" component={MatchScreen} />
+        <Stack.Screen name="ChatScreen" component={ChatScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )

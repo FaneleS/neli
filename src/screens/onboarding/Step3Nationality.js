@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import {
   View, Text, TextInput, TouchableOpacity,
-  StyleSheet, FlatList, Alert
+  StyleSheet, FlatList
 } from 'react-native'
-import OnboardingLayout from '../../components/OnboardingLayout'
 import { colors, radius, spacing } from '../../constants/theme'
+import { DiagonalWeave } from '../../components/OnboardingLayout'
 
 const COUNTRIES = [
   { name: 'South Africa', flag: '🇿🇦' },
@@ -84,62 +84,75 @@ export default function Step3Nationality({ navigation, route }) {
     c.name.toLowerCase().includes(search.toLowerCase())
   )
 
-  function handleNext() {
-    if (!selected) return Alert.alert('Please select your nationality')
-    navigation.navigate('Step4Bio', {
-      ...route.params,
-      nationality: selected.name,
-      countryFlag: selected.flag,
-    })
-  }
-
   return (
     <View style={styles.wrapper}>
-      <OnboardingLayout
-        step={3}
-        title="Your nationality"
-        subtitle="Celebrate where you're from"
-        onBack={() => navigation.goBack()}
-      >
-        <View style={styles.inner}>
-          <TextInput
-            style={styles.search}
-            value={search}
-            onChangeText={setSearch}
-            placeholder="Search country..."
-            placeholderTextColor={colors.taupeLight}
+      <DiagonalWeave />
+
+      <View style={styles.progressRow}>
+        {Array.from({ length: 8 }).map((_, i) => (
+          <View
+            key={i}
+            style={[
+              styles.progressSegment,
+              i < 3 ? styles.progressActive : styles.progressInactive,
+            ]}
           />
-          <FlatList
-            data={filtered}
-            keyExtractor={item => item.name}
-            style={styles.list}
-            keyboardShouldPersistTaps="handled"
-            renderItem={({ item: c }) => (
-              <TouchableOpacity
-                style={[
-                  styles.countryRow,
-                  selected?.name === c.name && styles.countryRowActive
-                ]}
-                onPress={() => setSelected(c)}
-              >
-                <Text style={styles.flag}>{c.flag}</Text>
-                <Text style={[
-                  styles.countryName,
-                  selected?.name === c.name && styles.countryNameActive
-                ]}>
-                  {c.name}
-                </Text>
-                {selected?.name === c.name && (
-                  <Text style={styles.check}>✓</Text>
-                )}
-              </TouchableOpacity>
+        ))}
+      </View>
+
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.backText}>← Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.logo}>Neli</Text>
+        <Text style={styles.title}>Your nationality</Text>
+        <Text style={styles.subtitle}>Tap your country to continue</Text>
+      </View>
+
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.search}
+          value={search}
+          onChangeText={setSearch}
+          placeholder="Search country..."
+          placeholderTextColor={colors.taupeLight}
+        />
+      </View>
+
+      <FlatList
+        data={filtered}
+        keyExtractor={item => item.name}
+        style={styles.list}
+        contentContainerStyle={styles.listContent}
+        keyboardShouldPersistTaps="handled"
+        renderItem={({ item: c }) => (
+          <TouchableOpacity
+            style={[
+              styles.countryRow,
+              selected?.name === c.name && styles.countryRowActive
+            ]}
+            onPress={() => {
+              setSelected(c)
+              navigation.navigate('Step4Bio', {
+                ...route.params,
+                nationality: c.name,
+                countryFlag: c.flag,
+              })
+            }}
+          >
+            <Text style={styles.flag}>{c.flag}</Text>
+            <Text style={[
+              styles.countryName,
+              selected?.name === c.name && styles.countryNameActive
+            ]}>
+              {c.name}
+            </Text>
+            {selected?.name === c.name && (
+              <Text style={styles.check}>✓</Text>
             )}
-          />
-          <TouchableOpacity style={styles.btn} onPress={handleNext}>
-            <Text style={styles.btnText}>Continue</Text>
           </TouchableOpacity>
-        </View>
-      </OnboardingLayout>
+        )}
+      />
     </View>
   )
 }
@@ -147,11 +160,57 @@ export default function Step3Nationality({ navigation, route }) {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
+    backgroundColor: colors.obsidian,
   },
-  inner: {
+  progressRow: {
+    flexDirection: 'row',
+    gap: 4,
+    paddingHorizontal: spacing.lg,
+    paddingTop: 52,
+    zIndex: 1,
+  },
+  progressSegment: {
     flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
+    height: 2,
+    borderRadius: 2,
+  },
+  progressActive: {
+    backgroundColor: colors.champagne,
+  },
+  progressInactive: {
+    backgroundColor: colors.line,
+  },
+  header: {
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
+    zIndex: 1,
+  },
+  backText: {
+    color: colors.champagne,
+    fontSize: 14,
+    marginBottom: spacing.sm,
+  },
+  logo: {
+    fontFamily: 'Italiana_400Regular',
+    fontSize: 28,
+    color: colors.champagne,
+    marginBottom: spacing.xs,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '500',
+    color: colors.parch,
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 13,
+    color: colors.taupeLight,
+    lineHeight: 20,
+    marginBottom: spacing.md,
+  },
+  searchContainer: {
+    paddingHorizontal: spacing.lg,
+    zIndex: 1,
   },
   search: {
     backgroundColor: colors.obsidian2,
@@ -161,11 +220,15 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     color: colors.parch,
     fontSize: 15,
-    marginBottom: spacing.md,
-    flexShrink: 0,
+    marginBottom: spacing.sm,
   },
   list: {
     flex: 1,
+    paddingHorizontal: spacing.lg,
+    zIndex: 1,
+  },
+  listContent: {
+    paddingBottom: spacing.sm,
   },
   countryRow: {
     flexDirection: 'row',
@@ -196,19 +259,5 @@ const styles = StyleSheet.create({
   check: {
     color: colors.champagne,
     fontSize: 16,
-  },
-  btn: {
-    backgroundColor: colors.champagne,
-    padding: spacing.md,
-    borderRadius: radius.full,
-    alignItems: 'center',
-    marginTop: spacing.sm,
-    marginBottom: spacing.lg,
-    flexShrink: 0,
-  },
-  btnText: {
-    fontFamily: 'Italiana_400Regular',
-    fontSize: 18,
-    color: colors.obsidian,
   },
 })

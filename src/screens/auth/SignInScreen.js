@@ -17,9 +17,16 @@ export default function SignInScreen({ navigation }) {
       return Alert.alert('Please fill in all fields')
     }
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     setLoading(false)
-    if (error) Alert.alert('Sign in failed', error.message)
+    if (error) {
+      Alert.alert('Sign in failed', error.message)
+    } else {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'MainApp' }],
+      })
+    }
   }
 
   return (
@@ -44,7 +51,7 @@ export default function SignInScreen({ navigation }) {
           value={email}
           onChangeText={setEmail}
           placeholder="your@email.com"
-          placeholderTextColor={colors.goldDim}
+          placeholderTextColor={colors.taupeLight}
           keyboardType="email-address"
           autoCapitalize="none"
         />
@@ -55,7 +62,7 @@ export default function SignInScreen({ navigation }) {
           value={password}
           onChangeText={setPassword}
           placeholder="Your password"
-          placeholderTextColor={colors.goldDim}
+          placeholderTextColor={colors.taupeLight}
           secureTextEntry
         />
 
@@ -65,7 +72,7 @@ export default function SignInScreen({ navigation }) {
           disabled={loading}
         >
           {loading
-            ? <ActivityIndicator color={colors.esp} />
+            ? <ActivityIndicator color={colors.obsidian} />
             : <Text style={styles.btnPrimaryText}>Sign in</Text>
           }
         </TouchableOpacity>

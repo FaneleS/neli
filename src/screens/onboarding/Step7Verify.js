@@ -4,14 +4,15 @@ import {
   StyleSheet, ScrollView, Alert, ActivityIndicator
 } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
-import OnboardingLayout from '../../components/OnboardingLayout'
 import { colors, radius, spacing } from '../../constants/theme'
+import { DiagonalWeave } from '../../components/OnboardingLayout'
 import { supabase } from '../../../lib/supabase'
 
 export default function Step7Verify({ navigation, route }) {
   const [idPhoto, setIdPhoto] = useState(null)
   const [selfie, setSelfie] = useState(null)
   const [loading, setLoading] = useState(false)
+  const params = route.params || {}
 
   async function pickID() {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
@@ -27,7 +28,13 @@ export default function Step7Verify({ navigation, route }) {
   async function takeSelfie() {
     const { status } = await ImagePicker.requestCameraPermissionsAsync()
     if (status !== 'granted') {
-      return Alert.alert('Permission needed', 'Please allow camera access')
+      const result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.9,
+      })
+      if (!result.canceled) setSelfie(result.assets[0].uri)
+      return
     }
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
@@ -38,41 +45,29 @@ export default function Step7Verify({ navigation, route }) {
   }
 
   async function handleComplete() {
-    if (!idPhoto || !selfie) {
-      return Alert.alert('Please upload your ID and take a selfie')
-    }
-
+    if (!idPhoto || !selfie) return Alert.alert('Please upload your ID and take a selfie')
     setLoading(true)
     try {
       const { data: { user } } = await supabase.auth.getUser()
-
       const { error: profileError } = await supabase
         .from('profiles')
         .upsert({
           id: user.id,
-          full_name: route.params.fullName,
-          date_of_birth: route.params.dob,
-          gender: route.params.gender,
-          nationality: route.params.nationality,
-          country_flag: route.params.countryFlag,
-          bio: route.params.bio,
+          full_name: params.fullName,
+          date_of_birth: params.dob,
+          gender: params.gender,
+          nationality: params.nationality,
+          country_flag: params.countryFlag,
+          bio: params.bio,
           verification_status: 'pending',
         })
-
       if (profileError) throw profileError
-
       const { error: verifyError } = await supabase
         .from('verifications')
-        .insert({
-          user_id: user.id,
-          status: 'pending',
-        })
-
+        .insert({ user_id: user.id, status: 'pending' })
       if (verifyError) throw verifyError
-
       setLoading(false)
-      navigation.navigate('Step8Personality')
-
+      navigation.navigate('Step8Personality', { ...params })
     } catch (error) {
       setLoading(false)
       Alert.alert('Error', error.message)
@@ -80,13 +75,30 @@ export default function Step7Verify({ navigation, route }) {
   }
 
   return (
-    <OnboardingLayout
-      step={7}
-      title="Verify your identity"
-      subtitle="Neli verifies every member to keep our community safe"
-      onBack={() => navigation.goBack()}
-    >
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <View style={styles.wrapper}>
+      <DiagonalWeave />
+      <View style={styles.progressRow}>
+        {Array.from({ length: 8 }).map((_, i) => (
+          <View key={i} style={[
+            styles.progressSegment,
+            i < 7 ? styles.progressActive : styles.progressInactive
+          ]} />
+        ))}
+      </View>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Text style={styles.backText}>← Back</Text>
+          </TouchableOpacity>
+          <Text style={styles.logo}>Neli</Text>
+          <Text style={styles.title}>Verify your identity</Text>
+          <Text style={styles.subtitle}>Neli verifies every member to keep our community safe</Text>
+        </View>
 
         <View style={styles.safetyBanner}>
           <Text style={styles.safetyIcon}>🔒</Text>
@@ -132,17 +144,73 @@ export default function Step7Verify({ navigation, route }) {
 
         <TouchableOpacity
           style={styles.skipBtn}
-          onPress={() => navigation.navigate('Step8Personality')}
+          onPress={() => navigation.navigate('Step8Personality', { ...params })}
         >
           <Text style={styles.skipText}>Skip for now — verify later</Text>
         </TouchableOpacity>
 
       </ScrollView>
-    </OnboardingLayout>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: colors.obsidian,
+  },
+  progressRow: {
+    flexDirection: 'row',
+    gap: 4,
+    paddingHorizontal: spacing.lg,
+    paddingTop: 52,
+    zIndex: 1,
+  },
+  progressSegment: {
+    flex: 1,
+    height: 2,
+    borderRadius: 2,
+  },
+  progressActive: {
+    backgroundColor: colors.champagne,
+  },
+  progressInactive: {
+    backgroundColor: colors.line,
+  },
+  scroll: {
+    flex: 1,
+    zIndex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.xl,
+  },
+  header: {
+    paddingTop: spacing.md,
+    marginBottom: spacing.lg,
+  },
+  backText: {
+    color: colors.champagne,
+    fontSize: 14,
+    marginBottom: spacing.sm,
+  },
+  logo: {
+    fontFamily: 'Italiana_400Regular',
+    fontSize: 28,
+    color: colors.champagne,
+    marginBottom: spacing.xs,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '500',
+    color: colors.parch,
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 13,
+    color: colors.taupeLight,
+    lineHeight: 20,
+  },
   safetyBanner: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -154,7 +222,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
     gap: spacing.sm,
   },
-  safetyIcon: { fontSize: 16 },
+  safetyIcon: {
+    fontSize: 16,
+  },
   safetyText: {
     flex: 1,
     fontSize: 12,
@@ -207,7 +277,9 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
     marginBottom: spacing.md,
   },
-  btnDisabled: { opacity: 0.4 },
+  btnDisabled: {
+    opacity: 0.4,
+  },
   btnText: {
     fontFamily: 'Italiana_400Regular',
     fontSize: 18,
