@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import {
   View, Text, TextInput, TouchableOpacity,
-  StyleSheet, ScrollView, Alert
+  StyleSheet, FlatList, Alert
 } from 'react-native'
 import OnboardingLayout from '../../components/OnboardingLayout'
 import { colors, radius, spacing } from '../../constants/theme'
@@ -37,6 +37,43 @@ const COUNTRIES = [
   { name: 'Sweden', flag: '🇸🇪' },
   { name: 'Norway', flag: '🇳🇴' },
   { name: 'New Zealand', flag: '🇳🇿' },
+  { name: 'Madagascar', flag: '🇲🇬' },
+  { name: 'Senegal', flag: '🇸🇳' },
+  { name: 'Ivory Coast', flag: '🇨🇮' },
+  { name: 'Cameroon', flag: '🇨🇲' },
+  { name: 'Angola', flag: '🇦🇴' },
+  { name: 'Mozambique', flag: '🇲🇿' },
+  { name: 'Rwanda', flag: '🇷🇼' },
+  { name: 'Somalia', flag: '🇸🇴' },
+  { name: 'Sudan', flag: '🇸🇩' },
+  { name: 'Tunisia', flag: '🇹🇳' },
+  { name: 'Algeria', flag: '🇩🇿' },
+  { name: 'Libya', flag: '🇱🇾' },
+  { name: 'Pakistan', flag: '🇵🇰' },
+  { name: 'Bangladesh', flag: '🇧🇩' },
+  { name: 'Sri Lanka', flag: '🇱🇰' },
+  { name: 'Indonesia', flag: '🇮🇩' },
+  { name: 'Malaysia', flag: '🇲🇾' },
+  { name: 'Philippines', flag: '🇵🇭' },
+  { name: 'Thailand', flag: '🇹🇭' },
+  { name: 'Vietnam', flag: '🇻🇳' },
+  { name: 'South Korea', flag: '🇰🇷' },
+  { name: 'Turkey', flag: '🇹🇷' },
+  { name: 'Saudi Arabia', flag: '🇸🇦' },
+  { name: 'UAE', flag: '🇦🇪' },
+  { name: 'Israel', flag: '🇮🇱' },
+  { name: 'Greece', flag: '🇬🇷' },
+  { name: 'Poland', flag: '🇵🇱' },
+  { name: 'Ukraine', flag: '🇺🇦' },
+  { name: 'Russia', flag: '🇷🇺' },
+  { name: 'Colombia', flag: '🇨🇴' },
+  { name: 'Peru', flag: '🇵🇪' },
+  { name: 'Chile', flag: '🇨🇱' },
+  { name: 'Venezuela', flag: '🇻🇪' },
+  { name: 'Cuba', flag: '🇨🇺' },
+  { name: 'Haiti', flag: '🇭🇹' },
+  { name: 'Jamaica', flag: '🇯🇲' },
+  { name: 'Trinidad and Tobago', flag: '🇹🇹' },
 ]
 
 export default function Step3Nationality({ navigation, route }) {
@@ -57,50 +94,65 @@ export default function Step3Nationality({ navigation, route }) {
   }
 
   return (
-    <OnboardingLayout
-      step={3}
-      title="Your nationality"
-      subtitle="Celebrate where you're from"
-      onBack={() => navigation.goBack()}
-    >
-      <View style={styles.container}>
-        <TextInput
-          style={styles.search}
-          value={search}
-          onChangeText={setSearch}
-          placeholder="Search country..."
-          placeholderTextColor={colors.taupeLight}
-        />
-        <ScrollView 
-          showsVerticalScrollIndicator={false} 
-          style={styles.list}
-          keyboardShouldPersistTaps="handled"
-        >
-          {filtered.map(c => (
-            <TouchableOpacity
-              key={c.name}
-              style={[styles.countryRow, selected?.name === c.name && styles.countryRowActive]}
-              onPress={() => setSelected(c)}
-            >
-              <Text style={styles.flag}>{c.flag}</Text>
-              <Text style={[styles.countryName, selected?.name === c.name && styles.countryNameActive]}>
-                {c.name}
-              </Text>
-              {selected?.name === c.name && (
-                <Text style={styles.check}>✓</Text>
-              )}
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-        <TouchableOpacity style={styles.btn} onPress={handleNext}>
-          <Text style={styles.btnText}>Continue</Text>
-        </TouchableOpacity>
-      </View>
-    </OnboardingLayout>
+    <View style={styles.wrapper}>
+      <OnboardingLayout
+        step={3}
+        title="Your nationality"
+        subtitle="Celebrate where you're from"
+        onBack={() => navigation.goBack()}
+      >
+        <View style={styles.inner}>
+          <TextInput
+            style={styles.search}
+            value={search}
+            onChangeText={setSearch}
+            placeholder="Search country..."
+            placeholderTextColor={colors.taupeLight}
+          />
+          <FlatList
+            data={filtered}
+            keyExtractor={item => item.name}
+            style={styles.list}
+            keyboardShouldPersistTaps="handled"
+            renderItem={({ item: c }) => (
+              <TouchableOpacity
+                style={[
+                  styles.countryRow,
+                  selected?.name === c.name && styles.countryRowActive
+                ]}
+                onPress={() => setSelected(c)}
+              >
+                <Text style={styles.flag}>{c.flag}</Text>
+                <Text style={[
+                  styles.countryName,
+                  selected?.name === c.name && styles.countryNameActive
+                ]}>
+                  {c.name}
+                </Text>
+                {selected?.name === c.name && (
+                  <Text style={styles.check}>✓</Text>
+                )}
+              </TouchableOpacity>
+            )}
+          />
+          <TouchableOpacity style={styles.btn} onPress={handleNext}>
+            <Text style={styles.btnText}>Continue</Text>
+          </TouchableOpacity>
+        </View>
+      </OnboardingLayout>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+  },
+  inner: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+  },
   search: {
     backgroundColor: colors.obsidian2,
     borderWidth: 0.5,
@@ -110,10 +162,10 @@ const styles = StyleSheet.create({
     color: colors.parch,
     fontSize: 15,
     marginBottom: spacing.md,
+    flexShrink: 0,
   },
   list: {
     flex: 1,
-    marginBottom: spacing.md,
   },
   countryRow: {
     flexDirection: 'row',
@@ -152,16 +204,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: spacing.sm,
     marginBottom: spacing.lg,
+    flexShrink: 0,
   },
   btnText: {
     fontFamily: 'Italiana_400Regular',
     fontSize: 18,
     color: colors.obsidian,
-  },
-
-  container: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
   },
 })
